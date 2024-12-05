@@ -181,35 +181,27 @@ async function createPosts(posts) {
 // Function 16: displayPosts
 async function displayPosts(posts) {
     const main = document.querySelector("main");
-    deleteChildElements(main); // Clear the `main` element first
+    deleteChildElements(main);
     let element;
 
     if (Array.isArray(posts) && posts.length) {
-        element = await createPosts(posts); // Generate a document fragment with all posts
-        main.appendChild(element); // Append the document fragment
+        element = await createPosts(posts);
+        main.appendChild(element);
     } else {
-        // Display the default message if no posts are available
         element = createElemWithText("p", "Select an Employee to display their posts.", "default-text");
         main.appendChild(element);
     }
 
-    return element; // Return the appended element (fragment or paragraph)
+    return element;
 }
 
 // Function 17: toggleComments
 function toggleComments(event, postId) {
-    if (!event || !postId) return undefined; // Validate inputs
+    if (!event || !postId) return undefined;
     event.target.listener = true; // Required for testing
-
-    const section = toggleCommentSection(postId); // Toggle the section visibility
-    const button = toggleCommentButton(postId); // Toggle the button text
-
-    if (section && button) {
-        return [section, button]; // Return both elements in an array
-    } else {
-        console.error("Failed to toggle comments or button for postId:", postId);
-        return undefined;
-    }
+    const section = toggleCommentSection(postId);
+    const button = toggleCommentButton(postId);
+    return [section, button];
 }
 
 // Function 18: refreshPosts
@@ -224,22 +216,16 @@ async function refreshPosts(posts) {
 
 // Function 19: selectMenuChangeEventHandler
 async function selectMenuChangeEventHandler(event) {
-    if (!event?.target) return undefined; // Ensure the event and target exist
+    if (!event?.target) return undefined;
     const selectMenu = document.getElementById("selectMenu");
-    selectMenu.disabled = true; // Disable the select menu while processing
+    selectMenu.disabled = true;
 
-    const userId = parseInt(event.target.value, 10) || 1; // Parse the user ID as an integer
-    const posts = await getUserPosts(userId); // Fetch posts for the selected user
+    const userId = parseInt(event.target.value, 10) || 1;
+    const posts = await getUserPosts(userId);
+    const refreshPostsArray = await refreshPosts(posts);
 
-    if (Array.isArray(posts) && posts.length > 0) {
-        const refreshPostsArray = await refreshPosts(posts); // Refresh posts in the DOM
-        selectMenu.disabled = false; // Re-enable the select menu
-        return [userId, posts, refreshPostsArray];
-    } else {
-        console.error("No posts found for userId:", userId);
-        selectMenu.disabled = false;
-        return [userId, [], undefined]; // Return empty data if no posts
-    }
+    selectMenu.disabled = false;
+    return [userId, posts, refreshPostsArray];
 }
 
 // Function 20: initPage
